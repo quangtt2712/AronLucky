@@ -4,6 +4,8 @@ import HeaderCoin from "../components/HeaderCoin";
 import HeaderTitle from "../components/HeaderTitle";
 import HeaderUserName from "../components/HeaderUserName";
 import BodyCard from "../components/BodyCard";
+import ButtonChangeBody from "../components/ButtonChangeBody";
+import ButtonRoll from "../components/ButtonRoll";
 const HomePage = () => {
   return (
     <div className="home-page">
@@ -15,6 +17,8 @@ const HomePage = () => {
               <HeaderCoin />
               <HeaderUserName />
               <BodyCard />
+              <ButtonChangeBody />
+              <ButtonRoll />
             </div>
           </div>
         </div>

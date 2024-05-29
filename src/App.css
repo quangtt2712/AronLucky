@@ -93,7 +93,7 @@ img {
   border-style: none; /* 1 */
 }
 .home-page {
-  height: 100%;
+  height: auto;
   width: 100%;
   background-image: url("./assets/background.jpg");
   background-size: cover; /* Đảm bảo hình ảnh phủ đầy */
@@ -206,11 +206,81 @@ ul {
   padding: 0;
 }
 .slot-item {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 }
 .slot-item img {
   width: 35%;
   opacity: .75;
+}
+
+.section-head-actions {
+  border: 3px solid #f5db79;
+  background: #393264;
+  border-radius: 0;
+  font-size: 20px;
+  padding: 5px 10px;
+  letter-spacing: 1px;
+  color: #ffda56;
+  text-transform: uppercase;
+  height: auto; /* Đặt lại height thành auto để phù hợp với nội dung bên trong */
+  display: inline-flex; /* Sử dụng display: flex để các phần tử con nằm theo chiều ngang */
+  align-items: center; 
+  line-height: 42px;
+  margin-top: 13px;
+  margin-bottom: 50px;
+  vertical-align: top;
+    font-weight: 700;
+}
+.block-section-head-actions {
+  display: flex;
+  justify-content: center;
+}
+.section-head-actions > * {
+  margin: 0 5px; /* Thêm khoảng cách giữa các phần tử con */
+  display: inline-flex; /* Sử dụng display: inline-flex để các phần tử con nằm trên cùng một dòng */
+  align-items: center; /* Căn các phần tử con theo trục dọc (chiều cao) */
+}
+.icon-keyboard{
+  font-size: 42px !important;
+}
+.section-button {
+  position: relative;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn {
+  background: #fbce3d url(./assets/btn-yellow-bg.jpg) no-repeat top;
+  background-size: cover;
+  color: #6a4c08;
+  box-shadow: inset 0 -5px #fef269;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  cursor: pointer;
+  font-size: 26px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 5px;
+  border: 0;
+  -webkit-appearance: none;
+  min-width: 288px;
+  padding: 0;
+  transition: all .3s;
+  height: 62px;
+  line-height: 62px;
+  -moz-appearance: none;
+  appearance: none;
+}
+.slot-number {
+  height: 100%;
+  font-size: 180px;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
