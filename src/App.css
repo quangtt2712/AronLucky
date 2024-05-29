@@ -182,6 +182,7 @@ img {
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
+
 }
 .slot {
   width: 180px;
@@ -193,6 +194,7 @@ img {
   overflow: hidden;
   height: 250px;
   position: relative;
+  
 }
 
 .slot-item {
@@ -206,13 +208,13 @@ ul {
   padding: 0;
 }
 .slot-item {
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 .slot-item img {
   width: 35%;
-  opacity: .75;
+  opacity: 0.75;
 }
 
 .section-head-actions {
@@ -226,12 +228,12 @@ ul {
   text-transform: uppercase;
   height: auto; /* Đặt lại height thành auto để phù hợp với nội dung bên trong */
   display: inline-flex; /* Sử dụng display: flex để các phần tử con nằm theo chiều ngang */
-  align-items: center; 
+  align-items: center;
   line-height: 42px;
   margin-top: 13px;
   margin-bottom: 50px;
   vertical-align: top;
-    font-weight: 700;
+  font-weight: 700;
 }
 .block-section-head-actions {
   display: flex;
@@ -242,7 +244,7 @@ ul {
   display: inline-flex; /* Sử dụng display: inline-flex để các phần tử con nằm trên cùng một dòng */
   align-items: center; /* Căn các phần tử con theo trục dọc (chiều cao) */
 }
-.icon-keyboard{
+.icon-keyboard {
   font-size: 42px !important;
 }
 .section-button {
@@ -269,18 +271,58 @@ ul {
   -webkit-appearance: none;
   min-width: 288px;
   padding: 0;
-  transition: all .3s;
+  transition: all 0.3s;
   height: 62px;
   line-height: 62px;
   -moz-appearance: none;
   appearance: none;
 }
 .slot-number {
-  height: 100%;
+  width: 100%;
+  height: 250px;
   font-size: 180px;
-    font-weight: 700;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slotMachineContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+
+  position: relative;
+  transition: all 1.5s ease-in-out 0s;
+}
+.rolling {
+  animation: roll 0.75s linear infinite;
+  filter: blur(5px);
+}
+.slotMachineNoTransition{-webkit-transition:none!important;transition:none!important}.slotMachineBlurFast{-webkit-filter:blur(5px);filter:blur(5px)}.slotMachineBlurMedium{-webkit-filter:blur(3px);filter:blur(3px)}.slotMachineBlurSlow{-webkit-filter:blur(2px);filter:blur(2px)}.slotMachineBlurTurtle{-webkit-filter:blur(1px);filter:blur(1px)}.slotMachineGradient{-webkit-mask-image:-webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(0,0,0,0)),color-stop(25%,rgba(0,0,0,1)),color-stop(75%,rgba(0,0,0,1)),color-stop(100%,rgba(0,0,0,0)));-webkit-mask:url("data:image/svg+xml;utf8,<svg version="1.1" xmlns="http:// www.w3.org/2000/svg" width="0" height="0"><mask id="slotMachineFadeMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox"><linearGradient id="slotMachineFadeGradient" gradientUnits="objectBoundingBox" x="0" y="0"><stop stop-color="white" stop-opacity="0" offset="0"></stop><stop stop-color="white" stop-opacity="1" offset="0.25"></stop><stop stop-color="white" stop-opacity="1" offset="0.75"></stop><stop stop-color="white" stop-opacity="0" offset="1"></stop></linearGradient><rect x="0" y="-1" width="1" height="1" transform="rotate(90) " fill="url(#slotMachineFadeMask) "></rect></mask></svg>#slotMachineFadeMask");mask:url("data:image/svg+xml;utf8,<svg version="1.1" xmlns="http:// www.w3.org/2000/svg" width="0" height="0"><mask id="slotMachineFadeMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox"><linearGradient id="slotMachineFadeGradient" gradientUnits="objectBoundingBox" x="0" y="0"><stop stop-color="white" stop-opacity="0" offset="0"></stop><stop stop-color="white" stop-opacity="1" offset="0.25"></stop><stop stop-color="white" stop-opacity="1" offset="0.75"></stop><stop stop-color="white" stop-opacity="0" offset="1"></stop></linearGradient><rect x="0" y="-1" width="1" height="1" transform="rotate(90) " fill="url(#slotMachineFadeMask) "></rect></mask></svg>#slotMachineFadeMask")}
+
+@keyframes roll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(calc(-10% * 10)); /* Di chuyển lên trên một khoảng bằng 10 lần chiều cao của mỗi con số */
+  }
+}
+
+.roll-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background: #fbce3d;
+  border: none;
+  border-radius: 5px;
+  box-shadow: inset 0 -5px #fef269;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.slot-item.hide {
+  display: none; /* Hiển thị none khi có class hide */
 }

@@ -18,7 +18,6 @@ const HomePage = () => {
               <HeaderUserName />
               <BodyCard />
               <ButtonChangeBody />
-              <ButtonRoll />
             </div>
           </div>
         </div>
