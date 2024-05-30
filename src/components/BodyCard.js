@@ -105,11 +105,13 @@ const BodyCard = ({ userList }) => {
     setRolling(true);
 
     if (userList.length > 0) {
+      console.log(userList);
       const randomIndex = Math.floor(Math.random() * userList.length);
       const randomElement = userList[randomIndex];
       console.log(randomElement);
       const newSlotNumbers = String(randomElement).padStart(6, "0").split("");
       setSlotNumbers(newSlotNumbers);
+      userList.splice(randomIndex, 1);
     } else {
       const randomIndex = Math.floor(Math.random() * myArray.length);
       const randomElement = myArray[randomIndex];
