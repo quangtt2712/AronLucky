@@ -93,7 +93,7 @@ img {
   border-style: none; /* 1 */
 }
 .home-page {
-  height: auto;
+  height: 120%;
   width: 100%;
   background-image: url("./assets/background.jpg");
   background-size: cover; /* Đảm bảo hình ảnh phủ đầy */
