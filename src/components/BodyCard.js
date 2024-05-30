@@ -6,20 +6,31 @@ import "../App.css";
 import confetti from "canvas-confetti";
 
 const BodyCard = () => {
-  const numberArray = [
-    "000001",
-    "000002",
-    "000003",
-    "000004",
-    "000005",
-    "T2uang",
-  ];
+  const [numberArray, setNumberArray] = useState([
+    "686868",
+    "393939",
+    "797979",
+    "T2uang"
+  ]); 
   const [rolling, setRolling] = useState(false);
   const [slotNumbers, setSlotNumbers] = useState(Array(6).fill("0"));
   const [getFinish, setFinish] = useState(false);
   const [slotItemVisible, setSlotItemVisible] = useState(true);
   const initialArray = [...Array(10).keys()];
   const [array, setArray] = useState(initialArray);
+  
+  useEffect(() => {
+    const storedData = localStorage.getItem("userList");
+    if (storedData) {
+      const numbers = storedData.split("\n");
+
+      // Lọc bỏ các chuỗi trống và xóa khoảng trắng từ mỗi số
+      const filteredNumbers = numbers.filter(num => num.trim() !== "").map(num => num.trim());
+
+      // Cập nhật numberArray state với các số đã lọc
+      setNumberArray(filteredNumbers);
+    }
+  }, []);
 
   const rollSlots = () => {
     if (rolling) {
@@ -132,7 +143,7 @@ const BodyCard = () => {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     const randomElement = numberArray[randomNumber];
-    const newSlotNumbers = String(newRandomNumber).padStart(6, "0").split("");
+    const newSlotNumbers = String(randomElement).padStart(6, "0").split("");
     setSlotNumbers(newSlotNumbers);
   };
 
