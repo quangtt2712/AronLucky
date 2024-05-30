@@ -6,6 +6,7 @@ import HeaderUserName from "../components/HeaderUserName";
 import BodyCard from "../components/BodyCard";
 import ButtonChangeBody from "../components/ButtonChangeBody";
 import ButtonRoll from "../components/ButtonRoll";
+import ListUser from "../components/ListUser";
 const HomePage = () => {
   return (
     <div className="home-page">
@@ -18,6 +19,7 @@ const HomePage = () => {
               <HeaderUserName />
               <BodyCard />
               <ButtonChangeBody />
+              {/* <ListUser /> */}
             </div>
           </div>
         </div>
