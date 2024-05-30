@@ -1,130 +1,96 @@
-import React, { useEffect, useState } from "react";
+// BodyCard.js
+import React, { useState } from "react";
 import xPrizeSvg from "../assets/x-prize.svg";
-import { useNavigate } from "react-router-dom";
-
-import "../App.css";
 import confetti from "canvas-confetti";
+import "../App.css";
 
-const BodyCard = () => {
-  const [numberArray, setNumberArray] = useState([
-    "686868",
-    "393939",
-    "797979",
-    "T2uang"
-  ]); 
+const BodyCard = ({ userList }) => {
   const [rolling, setRolling] = useState(false);
   const [slotNumbers, setSlotNumbers] = useState(Array(6).fill("0"));
   const [getFinish, setFinish] = useState(false);
   const [slotItemVisible, setSlotItemVisible] = useState(true);
   const initialArray = [...Array(10).keys()];
-  const [array, setArray] = useState(initialArray);
-  
-  useEffect(() => {
-    const storedData = localStorage.getItem("userList");
-    if (storedData) {
-      const numbers = storedData.split("\n");
+  const myArray = ["Thế2uang", "393939", "797979", "686868"];
 
-      // Lọc bỏ các chuỗi trống và xóa khoảng trắng từ mỗi số
-      const filteredNumbers = numbers.filter(num => num.trim() !== "").map(num => num.trim());
+  const triggerConfetti = () => {
+    const count = 200;
+    const defaults = { origin: { y: 0.7 } };
 
-      // Cập nhật numberArray state với các số đã lọc
-      setNumberArray(filteredNumbers);
-    }
-  }, []);
+    const fire = (particleRatio, opts) => {
+      confetti({
+        ...defaults,
+        ...opts,
+        particleCount: Math.floor(count * particleRatio),
+      });
+    };
+
+    fire(0.25, { spread: 26, startVelocity: 55 });
+    fire(0.2, { spread: 60 });
+    fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+    fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+    fire(0.1, { spread: 120, startVelocity: 45 });
+
+    const duration = 15 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaultsInterval = {
+      startVelocity: 30,
+      spread: 360,
+      ticks: 60,
+      zIndex: 0,
+    };
+
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({
+        ...defaultsInterval,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaultsInterval,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
+
+    const colors = ["#bb0000", "#ffffff"];
+    const end = Date.now() + 15 * 1000;
+
+    (function frame() {
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors,
+      });
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors,
+      });
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
+  };
 
   const rollSlots = () => {
     if (rolling) {
       setRolling(false);
       setFinish(true);
-      var count = 200;
-      var defaults = {
-        origin: { y: 0.7 },
-      };
-
-      function fire(particleRatio, opts) {
-        confetti({
-          ...defaults,
-          ...opts,
-          particleCount: Math.floor(count * particleRatio),
-        });
+      if (!getFinish) {
+        triggerConfetti();
       }
-
-      fire(0.25, {
-        spread: 26,
-        startVelocity: 55,
-      });
-      fire(0.2, {
-        spread: 60,
-      });
-      fire(0.35, {
-        spread: 100,
-        decay: 0.91,
-        scalar: 0.8,
-      });
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 25,
-        decay: 0.92,
-        scalar: 1.2,
-      });
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 45,
-      });
-      var duration = 15 * 1000;
-      var animationEnd = Date.now() + duration;
-      var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-      function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
-      }
-
-      var interval = setInterval(function () {
-        var timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          return clearInterval(interval);
-        }
-
-        var particleCount = 50 * (timeLeft / duration);
-        // since particles fall down, start a bit higher than random
-        confetti({
-          ...defaults,
-          particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        });
-        confetti({
-          ...defaults,
-          particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        });
-      }, 250);
-      var end = Date.now() + 15 * 1000;
-
-      // go Buckeyes!
-      var colors = ["#bb0000", "#ffffff"];
-
-      (function frame() {
-        confetti({
-          particleCount: 2,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: colors,
-        });
-        confetti({
-          particleCount: 2,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: colors,
-        });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
-
       return;
     }
 
@@ -134,17 +100,23 @@ const BodyCard = () => {
       setFinish(false);
       return;
     }
+
     setSlotItemVisible(!slotItemVisible);
     setRolling(true);
-    const randomNumber = Math.floor(Math.random() * numberArray.length);
-    const newRandomNumber = getRandomNumber(0, 999999);
 
-    function getRandomNumber(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    if (userList.length > 0) {
+      const randomIndex = Math.floor(Math.random() * userList.length);
+      const randomElement = userList[randomIndex];
+      console.log(randomElement);
+      const newSlotNumbers = String(randomElement).padStart(6, "0").split("");
+      setSlotNumbers(newSlotNumbers);
+    } else {
+      const randomIndex = Math.floor(Math.random() * myArray.length);
+      const randomElement = myArray[randomIndex];
+      console.log(randomElement);
+      const newSlotNumbers = String(randomElement).padStart(6, "0").split("");
+      setSlotNumbers(newSlotNumbers);
     }
-    const randomElement = numberArray[randomNumber];
-    const newSlotNumbers = String(randomElement).padStart(6, "0").split("");
-    setSlotNumbers(newSlotNumbers);
   };
 
   return (
@@ -174,17 +146,15 @@ const BodyCard = () => {
                     }`}
                   >
                     {rolling ? (
-                      [...array]
+                      initialArray
                         .sort(() => Math.random() - 0.5)
-                        .map((num, index) => (
-                          <div key={index} className="slot-number">
+                        .map((num, idx) => (
+                          <div key={idx} className="slot-number">
                             {num}
                           </div>
                         ))
                     ) : (
-                      <div key={index} className="slot-number">
-                        {number}
-                      </div>
+                      <div className="slot-number">{number}</div>
                     )}
                   </div>
                 </div>

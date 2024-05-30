@@ -1,27 +1,40 @@
+// ListUser.js
 import React, { useEffect, useState } from "react";
 import "../App.css";
 
-const ListUser = ({ onClose }) => {
-  const [userList, setUserList] = useState(""); // State để lưu trữ danh sách mã số quay thưởng
+const ListUser = ({ onClose, onUserListUpdate }) => {
+  const [userList, setUserList] = useState("");
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("userList");
+    if (storedData) {
+      setUserList(storedData);
+    }
+  }, []);
+
 
   const handleOverlayClick = () => {
-    onClose(); // Gọi hàm onClose để đóng component ListUser
+    onClose();
   };
 
   const handleFormClick = (e) => {
-    e.stopPropagation(); // Ngăn chặn sự kiện click từ lan tỏa ra ngoài
+    e.stopPropagation();
   };
 
-
   const handleSubmit = (e) => {
-    e.preventDefault(); // Ngăn chặn việc refresh trang khi submit form
-    // Lấy giá trị từ trường textarea
+    e.preventDefault();
     const textareaValue = e.target.elements.userList.value;
+    const userListArray = textareaValue.split("\n").filter(num => num.trim() !== "").map(num => num.trim());
     setUserList(textareaValue);
-    localStorage.setItem("userList", textareaValue); 
-    window.location.reload() 
-};
-  
+    onUserListUpdate(userListArray);
+    onClose();
+  };
+
+  const countItems = () => {
+    const lines = userList.split("\n");
+    const nonEmptyLines = lines.filter(line => line.trim() !== "");
+    return nonEmptyLines.length;
+  };
 
   return (
     <div className="overlay" onClick={handleOverlayClick}>
@@ -31,16 +44,16 @@ const ListUser = ({ onClose }) => {
           <textarea
             className="textarea"
             name="userList"
+            value={userList}
+            onChange={(e) => setUserList(e.target.value)}
             placeholder="Anh/ chị Copy danh sách Mã số quay thưởng vào đây. Mỗi số thì xuống dòng giúp em ạ (Tối đa từ 0 - 999.999). Nhấn ra ngoài để thoát."
           ></textarea>
-          <div className="number-user">Số lượng: 999999</div>
-
-          <button type="submit" className="btn-yellow-alt">
-            Lưu Lại
-          </button>
+          <div className="number-user">Số lượng: {countItems()}</div>
+          <button type="submit" className="btn-yellow-alt">Lưu Lại</button>
         </form>
       </div>
     </div>
   );
 };
+
 export default ListUser;
