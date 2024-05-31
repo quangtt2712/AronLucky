@@ -1,10 +1,10 @@
 // BodyCard.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import xPrizeSvg from "../assets/x-prize.svg";
 import confetti from "canvas-confetti";
 import "../App.css";
 
-const BodyCard = ({ userList }) => {
+const BodyCard = ({ userList, imgCard, isVisible, setIsVisible }) => {
   const [rolling, setRolling] = useState(false);
   const [slotNumbers, setSlotNumbers] = useState(Array(6).fill("0"));
   const [getFinish, setFinish] = useState(false);
@@ -12,56 +12,92 @@ const BodyCard = ({ userList }) => {
   const initialArray = [...Array(10).keys()];
   const myArray = ["Thế2uang", "393939", "797979", "686868"];
 
-  const triggerConfetti = () => {
-    const count = 200;
-    const defaults = { origin: { y: 0.7 } };
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(getFinish);
+      setIsVisible(true);
+      finishRoll();
+    }, 200);
+  }, [imgCard]);
 
-    const fire = (particleRatio, opts) => {
+  const finishRoll = () => {
+    setRolling(false);
+    setSlotItemVisible(true);
+    setFinish(false);
+    return;
+  };
+
+  const triggerConfetti = () => {
+    var count = 200;
+    var defaults = {
+      origin: { y: 0.7 },
+    };
+
+    function fire(particleRatio, opts) {
       confetti({
         ...defaults,
         ...opts,
         particleCount: Math.floor(count * particleRatio),
       });
-    };
+    }
 
-    fire(0.25, { spread: 26, startVelocity: 55 });
-    fire(0.2, { spread: 60 });
-    fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-    fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-    fire(0.1, { spread: 120, startVelocity: 45 });
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+    fire(0.2, {
+      spread: 60,
+    });
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2,
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
 
-    const duration = 15 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaultsInterval = {
-      startVelocity: 30,
-      spread: 360,
-      ticks: 60,
-      zIndex: 0,
-    };
+    // ////////////////////////////////////////
+    var duration = 8 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
 
-    const interval = setInterval(() => {
-      const timeLeft = animationEnd - Date.now();
+    var interval = setInterval(function () {
+      var timeLeft = animationEnd - Date.now();
+
       if (timeLeft <= 0) {
         return clearInterval(interval);
       }
 
-      const particleCount = 50 * (timeLeft / duration);
+      var particleCount = 50 * (timeLeft / duration);
+      // since particles fall down, start a bit higher than random
       confetti({
-        ...defaultsInterval,
+        ...defaults,
         particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
       });
       confetti({
-        ...defaultsInterval,
+        ...defaults,
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       });
     }, 250);
+    ///////////////////////////////
+    var end = Date.now() + 8 * 1000;
 
-    const colors = ["#bb0000", "#ffffff"];
-    const end = Date.now() + 15 * 1000;
+    // go Buckeyes!
+    var colors = ["#bb0000", "#FFFF00"];
 
     (function frame() {
       confetti({
@@ -69,15 +105,16 @@ const BodyCard = ({ userList }) => {
         angle: 60,
         spread: 55,
         origin: { x: 0 },
-        colors,
+        colors: colors,
       });
       confetti({
         particleCount: 2,
         angle: 120,
         spread: 55,
         origin: { x: 1 },
-        colors,
+        colors: colors,
       });
+
       if (Date.now() < end) {
         requestAnimationFrame(frame);
       }
@@ -88,9 +125,7 @@ const BodyCard = ({ userList }) => {
     if (rolling) {
       setRolling(false);
       setFinish(true);
-      if (!getFinish) {
-        triggerConfetti();
-      }
+      triggerConfetti();
       return;
     }
 
@@ -122,7 +157,7 @@ const BodyCard = ({ userList }) => {
   };
 
   return (
-    <div className="section-body">
+    <div className={`section-body ${isVisible ? "visible" : ""}`}>
       <div className="section-body-inner">
         <ul className="slots">
           {slotNumbers.map((number, index) => (
@@ -139,7 +174,7 @@ const BodyCard = ({ userList }) => {
                 >
                   <div className={`slot-item ${slotItemVisible ? "" : "hide"}`}>
                     <div className="card-inner">
-                      <img src={xPrizeSvg} alt="coin card" className="" />
+                      <img src={imgCard} alt="coin card" className="" />
                     </div>
                   </div>
                   <div

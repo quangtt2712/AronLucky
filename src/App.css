@@ -137,7 +137,9 @@ img {
   min-height: 120px;
   display: flex;
   justify-content: center;
+
 }
+
 .coin img {
   height: 120px;
 }
@@ -177,6 +179,7 @@ img {
   background: #2a254f;
   padding: 0 7px;
   border: 1px solid #1e1948;
+  cursor: pointer;
 }
 .slots {
   overflow-x: auto;
@@ -217,6 +220,7 @@ ul {
 .slot-item img {
   width: 35%;
   opacity: 0.75;
+  user-select: none;
 }
 
 
@@ -250,6 +254,7 @@ ul {
 }
 .icon-keyboard {
   font-size: 42px !important;
+  cursor: pointer;
 }
 .section-button {
   position: relative;
@@ -437,4 +442,20 @@ textarea:focus {
 }
 .slotMachineNoTransition {
   -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, transparent), color-stop(25%, #000), color-stop(75%, #000), color-stop(100%, transparent));
+}
+.imgCard{
+  opacity: 0;
+ 
+}
+.imgCard.visible{
+  opacity: 1;
+  transition: opacity 2s;
+}
+.section-body{
+  opacity: 0;
+}
+
+.section-body.visible{
+  opacity: 1;
+  transition: opacity 2s;
 }

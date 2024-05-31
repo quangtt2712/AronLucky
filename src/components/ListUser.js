@@ -46,7 +46,7 @@ const ListUser = ({ onClose, onUserListUpdate }) => {
             name="userList"
             value={userList}
             onChange={(e) => setUserList(e.target.value)}
-            placeholder="Anh/ chị Copy danh sách Mã số quay thưởng vào đây. Mỗi số thì xuống dòng giúp em ạ (Tối đa từ 0 - 999.999). Nhấn ra ngoài để thoát."
+            placeholder="Anh/ chị Copy danh sách Mã số quay thưởng vào đây. Mỗi số thì xuống dòng giúp em ạ (Tối đa từ 0 - 999.999).Nhấn ra ngoài để thoát."
           ></textarea>
           <div className="number-user">Số lượng: {countItems()}</div>
           <button type="submit" className="btn-yellow-alt">Lưu Lại</button>

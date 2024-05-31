@@ -1,13 +1,22 @@
-import React from "react";
-import xPrizeSvg from "../assets/x-prize.svg";
+import React, { useEffect, useState } from "react";
 
-const HeaderCoin = () => {
+const HeaderCoin = ({ imgCard, isVisible,setIsVisible }) => {
+
+
+  useEffect(() => {
+     setTimeout(() => {
+      setIsVisible(true); 
+     }, 200); 
+  }, [imgCard]); 
+
   return (
-    <header className="section-head">
-      <div className="coin">
-        <img src={xPrizeSvg} alt="coin" className=""></img>
+      <header className="section-head">
+      <div className={`coin`}>
+        <img src={imgCard} alt="coin" className={`imgCard ${isVisible ? "visible" : ""}`}></img>
       </div>
     </header>
-  );
+    
+  )
 };
+
 export default HeaderCoin;
