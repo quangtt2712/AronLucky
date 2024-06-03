@@ -13,12 +13,21 @@ import silverPrizeSvg from "../assets/silver-prize.svg";
 import goldPrizeSvg from "../assets/gold-prize.svg";
 import diamondPrizeSvg from "../assets/diamond-prize.svg";
 import xPrizeSvg from "../assets/x-prize.svg";
+import UploadImage from "../components/UploadImage";
+import PresentBody from "../components/PresentBody";
+import ClearIcon from "@mui/icons-material/Clear";
+import FormImg from "../components/FormImg";
+import { Form } from "react-router-dom";
+import Background from "../assets/background.jpg";
 
 const HomePage = () => {
   const [buttonClicked, setButtonClicked] = useState(false);
   const [userList, setUserList] = useState([]);
   const [currentComponentIndex, setCurrentComponentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState(<Background />);
+  const [showOverlay, setShowOverlay] = useState(false); // Thêm trạng thái này
+  const [buttonClickedImg, setButtonClickedImg] = useState(false);
 
   const headerCoins = [
     {
@@ -42,6 +51,43 @@ const HomePage = () => {
       text: "giải x",
     },
   ];
+  useEffect(() => {
+    // Khởi tạo hình ảnh nền từ localStorage hoặc một giá trị mặc định
+    const storedBackgroundImage = localStorage.getItem("backgroundImage");
+
+    if (storedBackgroundImage && storedBackgroundImage !== backgroundImage) {
+      setBackgroundImage(storedBackgroundImage);
+    } else if (!storedBackgroundImage) {
+      setBackgroundImage(Background);
+    }
+  }, [backgroundImage]);
+  const handleButtonClickImg = () => {
+    setButtonClickedImg(true);
+  };
+  const handleCloseFormImg = () => {
+    setButtonClickedImg(false);
+  };
+  const handleDeteleImg = () => {
+console.log("a");
+    localStorage.removeItem("backgroundImage"); 
+    setBackgroundImage(<Background />);
+  }
+  // Hàm xử lý sự kiện khi người dùng tải lên hình ảnh mới
+  const handleUploadImage = (event) => {
+    const file = event.target.files[0];
+    if (file.size > 4 * 1024 * 1024) {
+      // 5MB = 5 * 1024 * 1024 bytes
+      alert("Ảnh chỉ tối đa 4mb dùm em.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // Lưu trữ hình ảnh vào localStorage
+      localStorage.setItem("backgroundImage", reader.result);
+      setBackgroundImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     const storedData = localStorage.getItem("userList");
@@ -73,9 +119,20 @@ const HomePage = () => {
 
   const currentComponent = headerCoins[currentComponentIndex];
 
+  const handlePresentBodyClick = () => {
+    console.log(showOverlay);
+    setShowOverlay(true);
+  };
+
+  const handleOverlayClose = () => {
+    setShowOverlay(false);
+  };
 
   return (
-    <div className="home-page">
+    <div
+      className="home-page"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       <HeaderTitle />
       <div className="main-padding">
         <div className="container-fluid">
@@ -87,25 +144,82 @@ const HomePage = () => {
                 setIsVisible={setIsVisible}
               />
               <HeaderUserName />
-              <BodyCard userList={userList} imgCard={currentComponent.imgCard}
-                              isVisible={isVisible}
-                              setIsVisible={setIsVisible}/>
+              <BodyCard
+                userList={userList}
+                imgCard={currentComponent.imgCard}
+                isVisible={isVisible}
+                setIsVisible={setIsVisible}
+              />
               <ButtonChangeBody
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
               />
-              <ButtonRoll onClick={handleButtonClick} />
               {buttonClicked && (
                 <ListUser
                   onClose={handleCloseListUser}
                   onUserListUpdate={handleUserListUpdate}
                 />
               )}
+
+              <div className="collection-btn">
+                <UploadImage onChangeImg={handleButtonClickImg} />
+                <ButtonRoll onClick={handleButtonClick} />
+                <PresentBody onClick={handlePresentBodyClick} />
+              </div>
+              {buttonClickedImg && (
+                <FormImg
+                  onUpdateImg={handleUploadImage}
+                  onClose={handleCloseFormImg}
+                  onDelete={handleDeteleImg}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
+      {showOverlay && (
+        <div
+          className="home-page"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            position: "absolute", // Đảm bảo phần tử background sử dụng vị trí tuyệt đối
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1, // Thiết lập giá trị z-index thấp hơn overlay để background hiển thị phía trên cùng
+          }}
+        >
+          <div className="overlay-present">
+            <div className="overlay-content">
+              <ClearIcon
+                onClick={handleOverlayClose}
+                style={{ color: "#fff", cursor: "pointer" }}
+              >
+                Close
+              </ClearIcon>
+              <HeaderCoin
+                imgCard={currentComponent.imgCard}
+                isVisible={isVisible}
+                setIsVisible={setIsVisible}
+              />
+              <HeaderUserName />
+              <BodyCard
+                userList={userList}
+                imgCard={currentComponent.imgCard}
+                isVisible={isVisible}
+                setIsVisible={setIsVisible}
+              />
+              <ButtonChangeBody
+                items={headerCoins.map((item) => item.text)}
+                onChangeComponent={handleChangeComponent}
+                setIsVisible={setIsVisible}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

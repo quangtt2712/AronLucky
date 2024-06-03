@@ -10,22 +10,25 @@ const BodyCard = ({ userList, imgCard, isVisible, setIsVisible }) => {
   const [getFinish, setFinish] = useState(false);
   const [slotItemVisible, setSlotItemVisible] = useState(true);
   const initialArray = [...Array(10).keys()];
-  const myArray = ["Thế2uang", "393939", "797979", "686868"];
+  const myArray = ["Aron68", "393939", "797979", "686868"];
+
 
   useEffect(() => {
     setTimeout(() => {
       console.log(getFinish);
-      setIsVisible(true);
-      finishRoll();
-    }, 200);
-  }, [imgCard]);
+     setIsVisible(true); 
+     setFinish(true);
+     finishRoll();
+    }, 200); 
+ }, [imgCard]); 
 
-  const finishRoll = () => {
-    setRolling(false);
-    setSlotItemVisible(true);
-    setFinish(false);
-    return;
-  };
+ const finishRoll = () => {
+  setRolling(false);
+  setSlotItemVisible(true);
+  setFinish(false);
+  return;
+ }
+
 
   const triggerConfetti = () => {
     var count = 200;
@@ -66,59 +69,51 @@ const BodyCard = ({ userList, imgCard, isVisible, setIsVisible }) => {
 
     // ////////////////////////////////////////
     var duration = 8 * 1000;
-    var animationEnd = Date.now() + duration;
-    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+var animationEnd = Date.now() + duration;
+var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-    function randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
-    }
+function randomInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
 
-    var interval = setInterval(function () {
-      var timeLeft = animationEnd - Date.now();
+var interval = setInterval(function() {
+  var timeLeft = animationEnd - Date.now();
 
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
+  if (timeLeft <= 0) {
+    return clearInterval(interval);
+  }
 
-      var particleCount = 50 * (timeLeft / duration);
-      // since particles fall down, start a bit higher than random
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-      });
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-      });
-    }, 250);
-    ///////////////////////////////
-    var end = Date.now() + 8 * 1000;
+  var particleCount = 50 * (timeLeft / duration);
+  // since particles fall down, start a bit higher than random
+  confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+  confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+}, 250);
+///////////////////////////////
+var end = Date.now() + (8 * 1000);
 
-    // go Buckeyes!
-    var colors = ["#bb0000", "#FFFF00"];
+// go Buckeyes!
+var colors = ['#bb0000', '#FFFF00'];
 
-    (function frame() {
-      confetti({
-        particleCount: 2,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors,
-      });
-      confetti({
-        particleCount: 2,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors,
-      });
+(function frame() {
+  confetti({
+    particleCount: 2,
+    angle: 60,
+    spread: 55,
+    origin: { x: 0 },
+    colors: colors
+  });
+  confetti({
+    particleCount: 2,
+    angle: 120,
+    spread: 55,
+    origin: { x: 1 },
+    colors: colors
+  });
 
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    })();
+  if (Date.now() < end) {
+    requestAnimationFrame(frame);
+  }
+}());
   };
 
   const rollSlots = () => {
@@ -157,6 +152,7 @@ const BodyCard = ({ userList, imgCard, isVisible, setIsVisible }) => {
   };
 
   return (
+    
     <div className={`section-body ${isVisible ? "visible" : ""}`}>
       <div className="section-body-inner">
         <ul className="slots">
