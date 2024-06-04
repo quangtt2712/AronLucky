@@ -19,6 +19,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import FormImg from "../components/FormImg";
 import { Form } from "react-router-dom";
 import Background from "../assets/background.jpg";
+import { v4 as uuidv4 } from 'uuid';
 
 const HomePage = () => {
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -28,6 +29,9 @@ const HomePage = () => {
   const [backgroundImage, setBackgroundImage] = useState(<Background />);
   const [showOverlay, setShowOverlay] = useState(false); // Thêm trạng thái này
   const [buttonClickedImg, setButtonClickedImg] = useState(false);
+  const [overlayComponentIndex, setOverlayComponentIndex] = useState(null); // State mới cho overlay
+  const [updateButtonChangeBody, setUpdateButtonChangeBody] = useState(false); // State to trigger re-render
+
 
   const headerCoins = [
     {
@@ -52,7 +56,6 @@ const HomePage = () => {
     },
   ];
   useEffect(() => {
-    // Khởi tạo hình ảnh nền từ localStorage hoặc một giá trị mặc định
     const storedBackgroundImage = localStorage.getItem("backgroundImage");
 
     if (storedBackgroundImage && storedBackgroundImage !== backgroundImage) {
@@ -68,7 +71,6 @@ const HomePage = () => {
     setButtonClickedImg(false);
   };
   const handleDeteleImg = () => {
-console.log("a");
     localStorage.removeItem("backgroundImage"); 
     setBackgroundImage(<Background />);
   }
@@ -115,17 +117,19 @@ console.log("a");
 
   const handleChangeComponent = (index) => {
     setCurrentComponentIndex(index);
+    setOverlayComponentIndex(index); // Cập nhật index cho overlay khi thay đổi
+    setUpdateButtonChangeBody(!updateButtonChangeBody); // Trigger re-render
   };
 
   const currentComponent = headerCoins[currentComponentIndex];
-
   const handlePresentBodyClick = () => {
-    console.log(showOverlay);
     setShowOverlay(true);
   };
 
   const handleOverlayClose = () => {
     setShowOverlay(false);
+    setUpdateButtonChangeBody(!updateButtonChangeBody); // Trigger re-render
+
   };
 
   return (
@@ -143,7 +147,7 @@ console.log("a");
                 isVisible={isVisible}
                 setIsVisible={setIsVisible}
               />
-              <HeaderUserName />
+              {/* <HeaderUserName /> */}
               <BodyCard
                 userList={userList}
                 imgCard={currentComponent.imgCard}
@@ -154,6 +158,7 @@ console.log("a");
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
+                currentIndex={overlayComponentIndex} 
               />
               {buttonClicked && (
                 <ListUser
@@ -193,6 +198,8 @@ console.log("a");
         >
           <div className="overlay-present">
             <div className="overlay-content">
+            <HeaderTitle />
+
               <ClearIcon
                 onClick={handleOverlayClose}
                 style={{ color: "#fff", cursor: "pointer" }}
@@ -204,7 +211,7 @@ console.log("a");
                 isVisible={isVisible}
                 setIsVisible={setIsVisible}
               />
-              <HeaderUserName />
+              {/* <HeaderUserName /> */}
               <BodyCard
                 userList={userList}
                 imgCard={currentComponent.imgCard}
@@ -215,8 +222,12 @@ console.log("a");
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
+                currentIndex={overlayComponentIndex}
+                currentComponentIndex={overlayComponentIndex} 
               />
             </div>
+
+            
           </div>
         </div>
       )}

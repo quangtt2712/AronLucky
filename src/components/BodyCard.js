@@ -7,29 +7,32 @@ import "../App.css";
 const BodyCard = ({ userList, imgCard, isVisible, setIsVisible }) => {
   const [rolling, setRolling] = useState(false);
   const [slotNumbers, setSlotNumbers] = useState(Array(6).fill("0"));
+  const [slotStopStatus, setSlotStopStatus] = useState(Array(6).fill(false));
   const [getFinish, setFinish] = useState(false);
   const [slotItemVisible, setSlotItemVisible] = useState(true);
-  const initialArray = [...Array(10).keys()];
+  const initialArray = [...Array(10).keys()]
+    .map(String)
+    .concat(Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i)));
   const myArray = ["Aron68", "393939", "797979", "686868"];
 
+  
 
   useEffect(() => {
     setTimeout(() => {
-      console.log(getFinish);
-     setIsVisible(true); 
-     setFinish(true);
-     finishRoll();
-    }, 200); 
- }, [imgCard]); 
+      setIsVisible(true);
+      setFinish(true);
+      finishRoll();
+    }, 200);
+  }, [imgCard]);
 
- const finishRoll = () => {
-  setRolling(false);
-  setSlotItemVisible(true);
-  setFinish(false);
-  return;
- }
+  const finishRoll = () => {
+    setRolling(false);
+    setSlotItemVisible(true);
+    setFinish(false);
+    return;
+  };
 
-
+  
   const triggerConfetti = () => {
     var count = 200;
     var defaults = {
@@ -68,59 +71,85 @@ const BodyCard = ({ userList, imgCard, isVisible, setIsVisible }) => {
     });
 
     // ////////////////////////////////////////
-    var duration = 8 * 1000;
-var animationEnd = Date.now() + duration;
-var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    var duration = 15 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-function randomInRange(min, max) {
-  return Math.random() * (max - min) + min;
-}
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
 
-var interval = setInterval(function() {
-  var timeLeft = animationEnd - Date.now();
+    var interval = setInterval(function () {
+      var timeLeft = animationEnd - Date.now();
 
-  if (timeLeft <= 0) {
-    return clearInterval(interval);
-  }
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
 
-  var particleCount = 50 * (timeLeft / duration);
-  // since particles fall down, start a bit higher than random
-  confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-  confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-}, 250);
-///////////////////////////////
-var end = Date.now() + (8 * 1000);
+      var particleCount = 50 * (timeLeft / duration);
+      // since particles fall down, start a bit higher than random
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
+    ///////////////////////////////
+    var end = Date.now() + 15 * 1000;
 
-// go Buckeyes!
-var colors = ['#bb0000', '#FFFF00'];
+    // go Buckeyes!
+    var colors = ["#bb0000", "#FFFF00"];
 
-(function frame() {
-  confetti({
-    particleCount: 2,
-    angle: 60,
-    spread: 55,
-    origin: { x: 0 },
-    colors: colors
-  });
-  confetti({
-    particleCount: 2,
-    angle: 120,
-    spread: 55,
-    origin: { x: 1 },
-    colors: colors
-  });
+    (function frame() {
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors,
+      });
 
-  if (Date.now() < end) {
-    requestAnimationFrame(frame);
-  }
-}());
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
   };
 
   const rollSlots = () => {
     if (rolling) {
-      setRolling(false);
-      setFinish(true);
-      triggerConfetti();
+      
+      slotNumbers.forEach((_, index) => {
+        setTimeout(() => {
+          setSlotStopStatus((prevStatus) => {
+            const newStatus = [...prevStatus];
+            newStatus[index] = true;
+            console.log(newStatus);
+            return newStatus;
+          });
+
+        }, index * 1000); 
+      });
+      
+
+      setTimeout(() => {
+        setRolling(false);
+        setFinish(true);
+        triggerConfetti();
+        setSlotStopStatus(Array(6).fill(false));
+      }, slotNumbers.length * 1000 + 500);
+
       return;
     }
 
@@ -128,6 +157,7 @@ var colors = ['#bb0000', '#FFFF00'];
       setRolling(false);
       setSlotItemVisible(true);
       setFinish(false);
+
       return;
     }
 
@@ -149,10 +179,11 @@ var colors = ['#bb0000', '#FFFF00'];
       const newSlotNumbers = String(randomElement).padStart(6, "0").split("");
       setSlotNumbers(newSlotNumbers);
     }
+    
   };
+  
 
   return (
-    
     <div className={`section-body ${isVisible ? "visible" : ""}`}>
       <div className="section-body-inner">
         <ul className="slots">
@@ -175,21 +206,25 @@ var colors = ['#bb0000', '#FFFF00'];
                   </div>
                   <div
                     className={`slotMachineContainer ${
-                      rolling ? "rolling" : ""
+                      rolling && !slotStopStatus[index] ? "rolling" : ""
                     }`}
                   >
-                    {rolling ? (
+                    {rolling && !slotStopStatus[index] ? (
                       initialArray
                         .sort(() => Math.random() - 0.5)
                         .map((num, idx) => (
                           <div key={idx} className="slot-number">
                             {num}
+                            {console.log(document.querySelector('.slot-number').textContent)}
                           </div>
+                          
                         ))
                     ) : (
                       <div className="slot-number">{number}</div>
                     )}
                   </div>
+
+
                 </div>
               </div>
             </li>

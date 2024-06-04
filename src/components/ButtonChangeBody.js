@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-const ButtonChangeBody = ({ items, onChangeComponent, setIsVisible }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const ButtonChangeBody = ({ items, onChangeComponent, setIsVisible, currentComponentIndex }) => {
+  const [currentIndex, setCurrentIndex] = useState(
+    currentComponentIndex != null ? currentComponentIndex : 0
+);
 
-  
 
   const handlePrev = () => {
-    console.log(items);
+console.log();
     const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
     onChangeComponent(newIndex);
