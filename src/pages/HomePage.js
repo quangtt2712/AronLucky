@@ -19,7 +19,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import FormImg from "../components/FormImg";
 import { Form } from "react-router-dom";
 import Background from "../assets/background.jpg";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const HomePage = () => {
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -31,7 +31,6 @@ const HomePage = () => {
   const [buttonClickedImg, setButtonClickedImg] = useState(false);
   const [overlayComponentIndex, setOverlayComponentIndex] = useState(null); // State mới cho overlay
   const [updateButtonChangeBody, setUpdateButtonChangeBody] = useState(false); // State to trigger re-render
-
 
   const headerCoins = [
     {
@@ -71,9 +70,9 @@ const HomePage = () => {
     setButtonClickedImg(false);
   };
   const handleDeteleImg = () => {
-    localStorage.removeItem("backgroundImage"); 
+    localStorage.removeItem("backgroundImage");
     setBackgroundImage(<Background />);
-  }
+  };
   // Hàm xử lý sự kiện khi người dùng tải lên hình ảnh mới
   const handleUploadImage = (event) => {
     const file = event.target.files[0];
@@ -129,9 +128,7 @@ const HomePage = () => {
   const handleOverlayClose = () => {
     setShowOverlay(false);
     setUpdateButtonChangeBody(!updateButtonChangeBody); // Trigger re-render
-
   };
-
   return (
     <div
       className="home-page"
@@ -155,10 +152,11 @@ const HomePage = () => {
                 setIsVisible={setIsVisible}
               />
               <ButtonChangeBody
+                key={`main-${currentComponentIndex}`} // Dùng key để buộc re-render khi currentComponentIndex thay đổi
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
-                currentIndex={overlayComponentIndex} 
+                currentComponentIndex={overlayComponentIndex}
               />
               {buttonClicked && (
                 <ListUser
@@ -198,7 +196,7 @@ const HomePage = () => {
         >
           <div className="overlay-present">
             <div className="overlay-content">
-            <HeaderTitle />
+              <HeaderTitle />
 
               <ClearIcon
                 onClick={handleOverlayClose}
@@ -219,15 +217,13 @@ const HomePage = () => {
                 setIsVisible={setIsVisible}
               />
               <ButtonChangeBody
+                key={`overlay-${currentComponentIndex}`} // Dùng key để buộc re-render khi currentComponentIndex thay đổi
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
-                currentIndex={overlayComponentIndex}
-                currentComponentIndex={overlayComponentIndex} 
+                currentComponentIndex={overlayComponentIndex}
               />
             </div>
-
-            
           </div>
         </div>
       )}
