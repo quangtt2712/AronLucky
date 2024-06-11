@@ -1,9 +1,7 @@
-// HomePage.js
 import React, { useState, useEffect } from "react";
 import "../App.css";
 import HeaderCoin from "../components/HeaderCoin";
 import HeaderTitle from "../components/HeaderTitle";
-import HeaderUserName from "../components/HeaderUserName";
 import BodyCard from "../components/BodyCard";
 import ButtonChangeBody from "../components/ButtonChangeBody";
 import ButtonRoll from "../components/ButtonRoll";
@@ -17,20 +15,19 @@ import UploadImage from "../components/UploadImage";
 import PresentBody from "../components/PresentBody";
 import ClearIcon from "@mui/icons-material/Clear";
 import FormImg from "../components/FormImg";
-import { Form } from "react-router-dom";
 import Background from "../assets/background.jpg";
-import { v4 as uuidv4 } from "uuid";
+import { setImage, getImage, deleteImage } from '../db';
 
 const HomePage = () => {
   const [buttonClicked, setButtonClicked] = useState(false);
   const [userList, setUserList] = useState([]);
   const [currentComponentIndex, setCurrentComponentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState(<Background />);
-  const [showOverlay, setShowOverlay] = useState(false); // Thêm trạng thái này
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const [showOverlay, setShowOverlay] = useState(false);
   const [buttonClickedImg, setButtonClickedImg] = useState(false);
-  const [overlayComponentIndex, setOverlayComponentIndex] = useState(null); // State mới cho overlay
-  const [updateButtonChangeBody, setUpdateButtonChangeBody] = useState(false); // State to trigger re-render
+  const [overlayComponentIndex, setOverlayComponentIndex] = useState(null);
+  const [updateButtonChangeBody, setUpdateButtonChangeBody] = useState(false);
 
   const headerCoins = [
     {
@@ -54,37 +51,37 @@ const HomePage = () => {
       text: "giải x",
     },
   ];
-  useEffect(() => {
-    const storedBackgroundImage = localStorage.getItem("backgroundImage");
 
-    if (storedBackgroundImage && storedBackgroundImage !== backgroundImage) {
-      setBackgroundImage(storedBackgroundImage);
-    } else if (!storedBackgroundImage) {
-      setBackgroundImage(Background);
-    }
-  }, [backgroundImage]);
+  useEffect(() => {
+    const fetchBackgroundImage = async () => {
+      const storedBackgroundImage = await getImage('backgroundImage');
+      if (storedBackgroundImage) {
+        setBackgroundImage(storedBackgroundImage);
+      } else {
+        setBackgroundImage(Background);
+      }
+    };
+    fetchBackgroundImage();
+  }, []);
+
   const handleButtonClickImg = () => {
     setButtonClickedImg(true);
   };
+
   const handleCloseFormImg = () => {
     setButtonClickedImg(false);
   };
-  const handleDeteleImg = () => {
-    localStorage.removeItem("backgroundImage");
-    setBackgroundImage(<Background />);
+
+  const handleDeteleImg = async () => {
+    await deleteImage('backgroundImage');
+    setBackgroundImage(Background);
   };
-  // Hàm xử lý sự kiện khi người dùng tải lên hình ảnh mới
-  const handleUploadImage = (event) => {
+
+  const handleUploadImage = async (event) => {
     const file = event.target.files[0];
-    if (file.size > 4 * 1024 * 1024) {
-      // 5MB = 5 * 1024 * 1024 bytes
-      alert("Ảnh chỉ tối đa 4mb dùm em.");
-      return;
-    }
     const reader = new FileReader();
-    reader.onloadend = () => {
-      // Lưu trữ hình ảnh vào localStorage
-      localStorage.setItem("backgroundImage", reader.result);
+    reader.onloadend = async () => {
+      await setImage('backgroundImage', reader.result);
       setBackgroundImage(reader.result);
     };
     reader.readAsDataURL(file);
@@ -116,8 +113,8 @@ const HomePage = () => {
 
   const handleChangeComponent = (index) => {
     setCurrentComponentIndex(index);
-    setOverlayComponentIndex(index); // Cập nhật index cho overlay khi thay đổi
-    setUpdateButtonChangeBody(!updateButtonChangeBody); // Trigger re-render
+    setOverlayComponentIndex(index);
+    setUpdateButtonChangeBody(!updateButtonChangeBody);
   };
 
   const currentComponent = headerCoins[currentComponentIndex];
@@ -127,13 +124,11 @@ const HomePage = () => {
 
   const handleOverlayClose = () => {
     setShowOverlay(false);
-    setUpdateButtonChangeBody(!updateButtonChangeBody); // Trigger re-render
+    setUpdateButtonChangeBody(!updateButtonChangeBody);
   };
+
   return (
-    <div
-      className="home-page"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
+    <div className="home-page" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HeaderTitle />
       <div className="main-padding">
         <div className="container-fluid">
@@ -144,7 +139,6 @@ const HomePage = () => {
                 isVisible={isVisible}
                 setIsVisible={setIsVisible}
               />
-              {/* <HeaderUserName /> */}
               <BodyCard
                 userList={userList}
                 imgCard={currentComponent.imgCard}
@@ -152,7 +146,7 @@ const HomePage = () => {
                 setIsVisible={setIsVisible}
               />
               <ButtonChangeBody
-                key={`main-${currentComponentIndex}`} // Dùng key để buộc re-render khi currentComponentIndex thay đổi
+                key={`main-${currentComponentIndex}`}
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
@@ -186,12 +180,12 @@ const HomePage = () => {
           className="home-page"
           style={{
             backgroundImage: `url(${backgroundImage})`,
-            position: "absolute", // Đảm bảo phần tử background sử dụng vị trí tuyệt đối
+            position: "absolute",
             top: 0,
             left: 0,
             width: "100%",
             height: "100%",
-            zIndex: 1, // Thiết lập giá trị z-index thấp hơn overlay để background hiển thị phía trên cùng
+            zIndex: 1,
           }}
         >
           <div className="overlay-present">
@@ -209,7 +203,6 @@ const HomePage = () => {
                 isVisible={isVisible}
                 setIsVisible={setIsVisible}
               />
-              {/* <HeaderUserName /> */}
               <BodyCard
                 userList={userList}
                 imgCard={currentComponent.imgCard}
@@ -217,7 +210,7 @@ const HomePage = () => {
                 setIsVisible={setIsVisible}
               />
               <ButtonChangeBody
-                key={`overlay-${currentComponentIndex}`} // Dùng key để buộc re-render khi currentComponentIndex thay đổi
+                key={`overlay-${currentComponentIndex}`}
                 items={headerCoins.map((item) => item.text)}
                 onChangeComponent={handleChangeComponent}
                 setIsVisible={setIsVisible}
